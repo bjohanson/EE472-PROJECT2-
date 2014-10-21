@@ -44,13 +44,11 @@ int main(){
   //Set PWM0, output 1 to a duty cycle of 1/8
   PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, ulPeriod / 16);
   
+  //Hi!
+  
   //Activate PWM0
   PWMGenEnable(PWM0_BASE, PWM_GEN_0);   
   PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, FALSE);
-  
-  north = FALSE;
-  east = FALSE;
-  west = FALSE;
   
   toggleNorth = FALSE;
   toggleEast = FALSE;
