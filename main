@@ -548,95 +548,13 @@ void EastTrain(void* data){
     PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, TRUE);
   }
   //wait two seconds, stop second blast
-   if(*ptr->globalCount==(eastNoiseCount - 6)) {
-    PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, FALSE);
-  }
-  
-  }
-   /*if((eastNoiseCount == *ptr->globalCount)&&(localEast==TRUE)) {
-    eastNoiseCount = (*ptr->globalCount+78);
-    }*/
-  
-   
-  
-  }
-  if (*ptr->globalCount >= *ptr->traversalTime){
-     PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, FALSE);
-     //*ptr->trainPresent = FALSE;
-     eastNoiseCount = 0;
-     eastFlashCount = 0;
-     //localEastCount = 0;
-     brightness = 15;
-     //localEast = FALSE; //MAAAAAAN
-     *ptr->toggleEast = FALSE;
-     RIT128x96x4StringDraw(eastDisplay, 10, 40, 0);
-  }
-    return;
-}
 
-void Schedule(void* data){
-  static unsigned int justinCrazy;
-  static char globalCountArray[10];
-  for (int tibo = 0; tibo < 10; tibo++){
-    globalCountArray[tibo] = ' ';
-  }
-  
-  
-  scheduleData* tomPtr = (scheduleData*) data; 
-  int delay1 = 250000;
-  Delay(&delay1);
-  //static unsigned int justinCrazy = 0;
-  justinCrazy = *tomPtr->globalCount;
-  justinCrazy++;
-  *tomPtr->globalCount = justinCrazy;
-  char scheduleTitle[] = "TOM TIME: \0";
-  RIT128x96x4StringDraw(scheduleTitle, 0, 75, 15);
- 
-   int i = 9; 
-  
-  while(justinCrazy > 0) {
-    globalCountArray[i] = (justinCrazy%10) + 48;
-    justinCrazy = justinCrazy/10;
-    i--;     
-  }  
-  RIT128x96x4StringDraw(globalCountArray, 50, 75, 15);
-  //free(i);
-  return;
-}
-void Delay(int *waffle)
-{
- 
-  for(int d=*waffle; d>0; d--);
-  return;
-}
-//CODE STOLEN FROM:
-int seed = 1;
-int randomInteger(int low, int high)
-{
-        
-	double randNum = 0.0;
- 	int multiplier = 2743;
-	int addOn = 5923;
-	double max = INT_MAX + 1.0;
+dfgjhsdf
+sadf
+sdaf
+sad
+fsadfdfsdf
 
-	int retVal = 0;
 
-	if (low > high)
-		retVal = randomInteger(high, low);
-	else
-	{
-   		seed = seed*multiplier + addOn;
-   		randNum = seed;
+sdfsdfsdf
 
-		if (randNum <0)
-		{
-			randNum = randNum + max;
-		}
-
-		randNum = randNum/max;
-
-		retVal =  ((int)((high-low+1)*randNum))+low;
-	}
-	
-	return retVal;
-}
