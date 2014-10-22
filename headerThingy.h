@@ -1,13 +1,17 @@
-#define MAX_QUEUE_LENGTH 6
-#define NOISE_DELAY 10000;
-#define DELAY 500000;
+#define MAX_QUEUE_LENGTH        6
+#define DELAY                   250000
+#define TASK_SELECT             2
+#define HIGH                    TRUE
+#define LOW                     FALSE
+
+#define PORT_DATA  (GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7)  // full 8 bits of port used
 
 typedef struct {
   void (*justTrainTaskThings)(void*);
   void* trainTaskPtr;
 } TCB;
 
-typedef enum { FALSE = 0, TRUE = 1} bool;
+typedef enum {FALSE = 0, TRUE = 1} bool;
 
 void TrainCom(void* data);
 void SwitchControl(void* data);
