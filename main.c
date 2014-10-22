@@ -19,6 +19,7 @@ int randomInteger(int a, int b);
 void Delay(int* foolioJenkins);
 void setupPWM(void);
 void setupOutput(void);
+void pin(bool);
 
 int main(){
   setupPWM();
@@ -114,7 +115,7 @@ int main(){
 
 void TrainCom(void* data) {
   #if TASK_SELECT == 0 || TASK_SELECT == -1
-    SCOPE |= HIGH;
+    pin(HIGH);
   #endif
   
   int direction;
@@ -156,7 +157,7 @@ void TrainCom(void* data) {
   }
   
   #if TASK_SELECT == 0 || TASK_SELECT == -1
-    SCOPE |= LOW;
+    pin(LOW);
   #endif
   
   return;
@@ -164,7 +165,7 @@ void TrainCom(void* data) {
 
 void SwitchControl(void* data) {
   #if TASK_SELECT == 1 || TASK_SELECT == -1
-    SCOPE |= HIGH;
+    pin(HIGH);
   #endif
   
   switchControlData* ptr = (switchControlData*)data;
@@ -218,7 +219,7 @@ void SwitchControl(void* data) {
   }
   
   #if TASK_SELECT == 1 || TASK_SELECT == -1
-    SCOPE |= LOW;
+    pin(LOW);
   #endif
   
   return;
@@ -226,7 +227,7 @@ void SwitchControl(void* data) {
 
 void NorthTrain(void* data) {
   #if TASK_SELECT == 2 || TASK_SELECT == -1
-    SCOPE |= HIGH;
+    pin(HIGH);
   #endif
     
   northTrainData* ptr = (northTrainData*)data;
@@ -236,7 +237,6 @@ void NorthTrain(void* data) {
   static int brightness = 15;
   
   if(*ptr->north) {
-    //okay, start noise
     if(!*ptr->toggleNorth){
       *ptr->toggleNorth = TRUE;
       noiseCount = *ptr->globalCount + 60;
@@ -308,7 +308,7 @@ void NorthTrain(void* data) {
   }
   
   #if TASK_SELECT == 2 || TASK_SELECT == -1
-    SCOPE |= LOW;  
+    pin(LOW); 
   #endif
   
   return;
@@ -316,11 +316,10 @@ void NorthTrain(void* data) {
 
 void WestTrain(void* data) {
   #if TASK_SELECT == 3 || TASK_SELECT == -1
-    SCOPE |= HIGH;
+    pin(HIGH);
   #endif
   
-  westTrainData* ptr = (westTrainData*)data;
-  
+  westTrainData* ptr = (westTrainData*)data;  
   static unsigned int westNoiseCount = 0;
   static unsigned int westFlashCount = 0;
   static char westDisplay[] = "WestTrain \0";
@@ -387,7 +386,7 @@ void WestTrain(void* data) {
   }
   
   #if TASK_SELECT == 3 || TASK_SELECT == -1
-    SCOPE |= LOW;  
+    pin(LOW);
   #endif
   
   return;
@@ -395,11 +394,10 @@ void WestTrain(void* data) {
 
 void EastTrain(void* data){
   #if TASK_SELECT == 4 || TASK_SELECT == -1
-    SCOPE |= HIGH;  
+    pin(HIGH);
   #endif
     
-  eastTrainData* ptr = (eastTrainData*)data;
-  
+  eastTrainData* ptr = (eastTrainData*)data;  
   static unsigned int eastNoiseCount = 0;
   static unsigned int eastFlashCount = 0;
   static char eastDisplay[] = "EastTrain \0";
@@ -485,7 +483,7 @@ void EastTrain(void* data){
   }
 
   #if TASK_SELECT == 4 || TASK_SELECT == -1
-    SCOPE |= LOW;
+    pin(LOW);
   #endif
   
   return;
@@ -493,7 +491,7 @@ void EastTrain(void* data){
 
 void Schedule(void* data) {
   #if TASK_SELECT == 5 || TASK_SELECT == -1
-    SCOPE |= HIGH;
+    pin(HIGH);
   #endif
     
   static unsigned int justinCrazy;
@@ -522,7 +520,7 @@ void Schedule(void* data) {
   RIT128x96x4StringDraw(globalCountArray, 50, 75, 15);
   
   #if TASK_SELECT == 5 || TASK_SELECT == -1
-    SCOPE |= LOW;
+    pin(LOW);
   #endif
   
   return;
@@ -596,8 +594,16 @@ void setupPWM(void) {
 }
 
 void setupOutput(void) {
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-  GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, PORT_DATA);
-  GPIOPinWrite(GPIO_PORTE_BASE, PORT_DATA, 0x01);
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+  GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, PORT_DATA);
+  return;
+}
+
+void pin(bool status)
+{
+  if(status)
+    GPIOPinWrite(GPIO_PORTD_BASE, PORT_DATA, 0x20);
+  else
+    GPIOPinWrite(GPIO_PORTD_BASE, PORT_DATA, 0x00);
   return;
 }
