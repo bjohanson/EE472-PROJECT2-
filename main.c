@@ -8,6 +8,7 @@
 #include "driverlib/debug.h"
 #include "driverlib/sysctl.h"
 #include "drivers/rit128x96x4.h"
+#include "inc/lm3s8962.h"
 
 //Include hardware memory map, GPIO driver, and PWM driver
 #include "inc/hw_memmap.h"
@@ -16,39 +17,16 @@
 
 int randomInteger(int a, int b);
 void Delay(int* foolioJenkins);
+void setupPWM(void);
+void setupOutput(void);
 
 int main(){
+  setupPWM();
+  setupOutput();
   
-  //Set PWM Divide Ratio to 1
-  SysCtlPWMClockSet(SYSCTL_PWMDIV_1);
-  
-  //Set Device: PWM0 Enabled
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
-  
-  //Set GPIO Port: G Enabled
-  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
-  
-  //Tell Port G, Pin 1, to take input from PWM 0
-  GPIOPinTypePWM(GPIO_PORTG_BASE, GPIO_PIN_1);
-  
-  //Set a 440 Hz frequency as u1Period
-  unsigned int ulPeriod = SysCtlClockGet() / 100;
-  
-  //Configure PWM0 in up-down count mode, no sync to clock
-  PWMGenConfigure(PWM0_BASE, PWM_GEN_0,
-                  PWM_GEN_MODE_UP_DOWN | PWM_GEN_MODE_NO_SYNC);
-  
-  //Set u1Period (440 Hz) as the period of PWM0
-  PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, ulPeriod);
-  
-  //Set PWM0, output 1 to a duty cycle of 1/8
-  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, ulPeriod / 16);
-  
-  //Hi!
-  
-  //Activate PWM0
-  PWMGenEnable(PWM0_BASE, PWM_GEN_0);   
-  PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, FALSE);
+  north = FALSE;
+  east = FALSE;
+  west = FALSE;
   
   toggleNorth = FALSE;
   toggleEast = FALSE;
@@ -135,6 +113,10 @@ int main(){
 }
 
 void TrainCom(void* data) {
+  #if TASK_SELECT == 0
+    SCOPE = HIGH;
+  #endif
+  
   int direction;
   trainComData* ptr = (trainComData*)data;
   static int brightness;
@@ -173,10 +155,18 @@ void TrainCom(void* data) {
     }    
   }
   
+  #if TASK_SELECT == 0 || TASK_SELECT == -1
+    SCOPE = LOW;
+  #endif
+  
   return;
 }
 
 void SwitchControl(void* data) {
+  #if TASK_SELECT == 1 || TASK_SELECT == -1
+    SCOPE = HIGH;
+  #endif
+  
   switchControlData* ptr = (switchControlData*)data;
   static int rand = 0;
   static char brando9k[] = "GRIDLOCK! \0";
@@ -227,10 +217,18 @@ void SwitchControl(void* data) {
     }
   }
   
+  #if TASK_SELECT == 1 || TASK_SELECT == -1
+    SCOPE = LOW;
+  #endif
+  
   return;
 }
 
 void NorthTrain(void* data) {
+  #if TASK_SELECT == 2 || TASK_SELECT == -1
+    SCOPE = HIGH;
+  #endif
+    
   northTrainData* ptr = (northTrainData*)data;
   static unsigned int noiseCount = 0;
   static unsigned int northFlashCount = 0;  
@@ -309,10 +307,18 @@ void NorthTrain(void* data) {
     RIT128x96x4StringDraw(northDisplay, 10, 40, 0);
   }
   
+  #if TASK_SELECT == 2 || TASK_SELECT == -1
+    SCOPE = LOW;  
+  #endif
+  
   return;
 }
 
 void WestTrain(void* data) {
+  #if TASK_SELECT == 3 || TASK_SELECT == -1
+    SCOPE = HIGH;
+  #endif
+  
   westTrainData* ptr = (westTrainData*)data;
   
   static unsigned int westNoiseCount = 0;
@@ -380,10 +386,18 @@ void WestTrain(void* data) {
     RIT128x96x4StringDraw(westDisplay, 10, 40, 0);
   }
   
+  #if TASK_SELECT == 3 || TASK_SELECT == -1
+    SCOPE = LOW;  
+  #endif
+  
   return;
 }
 
 void EastTrain(void* data){
+  #if TASK_SELECT == 4 || TASK_SELECT == -1
+    SCOPE = HIGH;  
+  #endif
+    
   eastTrainData* ptr = (eastTrainData*)data;
   
   static unsigned int eastNoiseCount = 0;
@@ -469,11 +483,19 @@ void EastTrain(void* data){
     *ptr->toggleEast = FALSE;
     RIT128x96x4StringDraw(eastDisplay, 10, 40, 0);
   }
+
+  #if TASK_SELECT == 4 || TASK_SELECT == -1
+    SCOPE = LOW;
+  #endif
   
   return;
 }
 
 void Schedule(void* data) {
+  #if TASK_SELECT == 5 || TASK_SELECT == -1
+    SCOPE = HIGH;
+  #endif
+    
   static unsigned int justinCrazy;
   static char globalCountArray[10];
   
@@ -481,7 +503,7 @@ void Schedule(void* data) {
     globalCountArray[tibo] = ' ';
   
   scheduleData* tomPtr = (scheduleData*) data; 
-  int delay1 = 250000;
+  int delay1 = DELAY;
   Delay(&delay1);
   justinCrazy = *tomPtr->globalCount;
   justinCrazy++;
@@ -498,6 +520,10 @@ void Schedule(void* data) {
   }
   
   RIT128x96x4StringDraw(globalCountArray, 50, 75, 15);
+  
+  #if TASK_SELECT == 5 || TASK_SELECT == -1
+    SCOPE = LOW;
+  #endif
   
   return;
 }
@@ -534,4 +560,41 @@ int randomInteger(int low, int high)
   }
   
   return retVal;
+}
+
+void setupPWM(void) {
+  //Set PWM Divide Ratio to 1
+  SysCtlPWMClockSet(SYSCTL_PWMDIV_1);
+  
+  //Set Device: PWM0 Enabled
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
+  
+  //Set GPIO Port: G Enabled
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+  
+  //Tell Port G, Pin 1, to take input from PWM 0
+  GPIOPinTypePWM(GPIO_PORTG_BASE, GPIO_PIN_1);
+  
+  //Set a 440 Hz frequency as u1Period
+  unsigned int ulPeriod = SysCtlClockGet() / 100;
+  
+  //Configure PWM0 in up-down count mode, no sync to clock
+  PWMGenConfigure(PWM0_BASE, PWM_GEN_0,
+                  PWM_GEN_MODE_UP_DOWN | PWM_GEN_MODE_NO_SYNC);
+  
+  //Set u1Period (440 Hz) as the period of PWM0
+  PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, ulPeriod);
+  
+  //Set PWM0, output 1 to a duty cycle of 1/8
+  PWMPulseWidthSet(PWM0_BASE, PWM_OUT_1, ulPeriod / 16);
+  
+  //Activate PWM0
+  PWMGenEnable(PWM0_BASE, PWM_GEN_0);   
+  PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, FALSE);
+}
+
+void setupOutput(void) {
+  GPIO_PORTC_DIR_R = 0xff;
+  GPIO_PORTC_DEN_R = 0xff;
+  GPIO_PORTC_AFSEL_R = 0x00;
 }
