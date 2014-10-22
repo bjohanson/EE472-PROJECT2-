@@ -113,8 +113,8 @@ int main(){
 }
 
 void TrainCom(void* data) {
-  #if TASK_SELECT == 0
-    SCOPE = HIGH;
+  #if TASK_SELECT == 0 || TASK_SELECT == -1
+    SCOPE |= HIGH;
   #endif
   
   int direction;
@@ -156,7 +156,7 @@ void TrainCom(void* data) {
   }
   
   #if TASK_SELECT == 0 || TASK_SELECT == -1
-    SCOPE = LOW;
+    SCOPE |= LOW;
   #endif
   
   return;
@@ -164,7 +164,7 @@ void TrainCom(void* data) {
 
 void SwitchControl(void* data) {
   #if TASK_SELECT == 1 || TASK_SELECT == -1
-    SCOPE = HIGH;
+    SCOPE |= HIGH;
   #endif
   
   switchControlData* ptr = (switchControlData*)data;
@@ -218,7 +218,7 @@ void SwitchControl(void* data) {
   }
   
   #if TASK_SELECT == 1 || TASK_SELECT == -1
-    SCOPE = LOW;
+    SCOPE |= LOW;
   #endif
   
   return;
@@ -226,7 +226,7 @@ void SwitchControl(void* data) {
 
 void NorthTrain(void* data) {
   #if TASK_SELECT == 2 || TASK_SELECT == -1
-    SCOPE = HIGH;
+    SCOPE |= HIGH;
   #endif
     
   northTrainData* ptr = (northTrainData*)data;
@@ -308,7 +308,7 @@ void NorthTrain(void* data) {
   }
   
   #if TASK_SELECT == 2 || TASK_SELECT == -1
-    SCOPE = LOW;  
+    SCOPE |= LOW;  
   #endif
   
   return;
@@ -316,7 +316,7 @@ void NorthTrain(void* data) {
 
 void WestTrain(void* data) {
   #if TASK_SELECT == 3 || TASK_SELECT == -1
-    SCOPE = HIGH;
+    SCOPE |= HIGH;
   #endif
   
   westTrainData* ptr = (westTrainData*)data;
@@ -387,7 +387,7 @@ void WestTrain(void* data) {
   }
   
   #if TASK_SELECT == 3 || TASK_SELECT == -1
-    SCOPE = LOW;  
+    SCOPE |= LOW;  
   #endif
   
   return;
@@ -395,7 +395,7 @@ void WestTrain(void* data) {
 
 void EastTrain(void* data){
   #if TASK_SELECT == 4 || TASK_SELECT == -1
-    SCOPE = HIGH;  
+    SCOPE |= HIGH;  
   #endif
     
   eastTrainData* ptr = (eastTrainData*)data;
@@ -485,7 +485,7 @@ void EastTrain(void* data){
   }
 
   #if TASK_SELECT == 4 || TASK_SELECT == -1
-    SCOPE = LOW;
+    SCOPE |= LOW;
   #endif
   
   return;
@@ -493,7 +493,7 @@ void EastTrain(void* data){
 
 void Schedule(void* data) {
   #if TASK_SELECT == 5 || TASK_SELECT == -1
-    SCOPE = HIGH;
+    SCOPE |= HIGH;
   #endif
     
   static unsigned int justinCrazy;
@@ -522,7 +522,7 @@ void Schedule(void* data) {
   RIT128x96x4StringDraw(globalCountArray, 50, 75, 15);
   
   #if TASK_SELECT == 5 || TASK_SELECT == -1
-    SCOPE = LOW;
+    SCOPE |= LOW;
   #endif
   
   return;
@@ -591,10 +591,13 @@ void setupPWM(void) {
   //Activate PWM0
   PWMGenEnable(PWM0_BASE, PWM_GEN_0);   
   PWMOutputState(PWM0_BASE, PWM_OUT_1_BIT, FALSE);
+  
+  return;
 }
 
 void setupOutput(void) {
-  GPIO_PORTC_DIR_R = 0xff;
-  GPIO_PORTC_DEN_R = 0xff;
-  GPIO_PORTC_AFSEL_R = 0x00;
+  SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+  GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, PORT_DATA);
+  GPIOPinWrite(GPIO_PORTE_BASE, PORT_DATA, 0x01);
+  return;
 }
