@@ -1,0 +1,16 @@
+TASK	        MEASUREMENT	    MIN (ms)	MAX (ms)
+TrainCom	    Always	        0.9880	  1.5100
+SwitchControl	Gridlock	      1.4900	  2.0100
+	            No gridlock	    0.0042	  0.0042
+NorthTrain	  Going North	    1.7500	  1.7500
+	            Not going North	0.0030	  0.0030
+WestTrain	    Going West	    1.5800	  1.5800
+	            Not going West	0.0030  	0.0030
+EastTrain	    Going East	    1.5800	  1.5800
+	            Not going East	0.0030  	0.0030
+Schedule	    Always	        69.0000	  69.5000
+TOTAL	        Measured	      72.0000	  72.0000
+	            Gridlock	      71.4870	  73.0290
+	            Northbound      71.7482	  72.7702
+            	Westbound	      71.5782	  72.6002
+            	Eastbound	      71.5782	  72.6002
