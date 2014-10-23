@@ -114,9 +114,9 @@ int main(){
 }
 
 void TrainCom(void* data) {
-  #if TASK_SELECT == 0 || TASK_SELECT == -1
-    pin(HIGH);
-  #endif
+#if TASK_SELECT == 0 || TASK_SELECT == -1
+  pin(HIGH);
+#endif
   
   int direction;
   trainComData* ptr = (trainComData*)data;
@@ -156,17 +156,18 @@ void TrainCom(void* data) {
     }    
   }
   
-  #if TASK_SELECT == 0 || TASK_SELECT == -1
-    pin(LOW);
-  #endif
+  
+#if TASK_SELECT == 0 || TASK_SELECT == -1
+  pin(LOW);
+#endif
   
   return;
 }
 
 void SwitchControl(void* data) {
-  #if TASK_SELECT == 1 || TASK_SELECT == -1
-    pin(HIGH);
-  #endif
+#if TASK_SELECT == 1 || TASK_SELECT == -1
+  pin(HIGH);
+#endif
   
   switchControlData* ptr = (switchControlData*)data;
   static int rand = 0;
@@ -218,18 +219,18 @@ void SwitchControl(void* data) {
     }
   }
   
-  #if TASK_SELECT == 1 || TASK_SELECT == -1
-    pin(LOW);
-  #endif
+#if TASK_SELECT == 1 || TASK_SELECT == -1
+  pin(LOW);
+#endif
   
   return;
 }
 
 void NorthTrain(void* data) {
-  #if TASK_SELECT == 2 || TASK_SELECT == -1
-    pin(HIGH);
-  #endif
-    
+#if TASK_SELECT == 2 || TASK_SELECT == -1
+  pin(HIGH);
+#endif
+  
   northTrainData* ptr = (northTrainData*)data;
   static unsigned int noiseCount = 0;
   static unsigned int northFlashCount = 0;  
@@ -307,17 +308,17 @@ void NorthTrain(void* data) {
     RIT128x96x4StringDraw(northDisplay, 10, 40, 0);
   }
   
-  #if TASK_SELECT == 2 || TASK_SELECT == -1
-    pin(LOW); 
-  #endif
+#if TASK_SELECT == 2 || TASK_SELECT == -1
+  pin(LOW); 
+#endif
   
   return;
 }
 
 void WestTrain(void* data) {
-  #if TASK_SELECT == 3 || TASK_SELECT == -1
-    pin(HIGH);
-  #endif
+#if TASK_SELECT == 3 || TASK_SELECT == -1
+  pin(HIGH);
+#endif
   
   westTrainData* ptr = (westTrainData*)data;  
   static unsigned int westNoiseCount = 0;
@@ -335,10 +336,10 @@ void WestTrain(void* data) {
     
     //FLASH EVENTS
     if(*ptr->toggleWest) {
-      if ((*ptr->globalCount - westFlashCount) % 24 == 0)
+      if ((*ptr->globalCount - westFlashCount) % 12 == 0)
         brightness = 15; 
       
-      if ((*ptr->globalCount - westFlashCount) % 24 == 12)
+      if ((*ptr->globalCount - westFlashCount) % 12 == 6)
         brightness = 0;
       
       RIT128x96x4StringDraw(westDisplay, 10, 40, brightness); 
@@ -385,18 +386,18 @@ void WestTrain(void* data) {
     RIT128x96x4StringDraw(westDisplay, 10, 40, 0);
   }
   
-  #if TASK_SELECT == 3 || TASK_SELECT == -1
-    pin(LOW);
-  #endif
+#if TASK_SELECT == 3 || TASK_SELECT == -1
+  pin(LOW);
+#endif
   
   return;
 }
 
 void EastTrain(void* data){
-  #if TASK_SELECT == 4 || TASK_SELECT == -1
-    pin(HIGH);
-  #endif
-    
+#if TASK_SELECT == 4 || TASK_SELECT == -1
+  pin(HIGH);
+#endif
+  
   eastTrainData* ptr = (eastTrainData*)data;  
   static unsigned int eastNoiseCount = 0;
   static unsigned int eastFlashCount = 0;
@@ -416,10 +417,10 @@ void EastTrain(void* data){
     if(*ptr->toggleEast) {
       //FLASH OFF
       
-      if ((*ptr->globalCount - eastFlashCount) % 12 == 0)
+      if ((*ptr->globalCount - eastFlashCount) % 24 == 0)
         brightness = 15; 
       
-      if ((*ptr->globalCount - eastFlashCount) % 12 == 6)
+      if ((*ptr->globalCount - eastFlashCount) % 24 == 12)
         brightness = 0;
       
       RIT128x96x4StringDraw(eastDisplay, 10, 40, brightness); 
@@ -481,19 +482,19 @@ void EastTrain(void* data){
     *ptr->toggleEast = FALSE;
     RIT128x96x4StringDraw(eastDisplay, 10, 40, 0);
   }
-
-  #if TASK_SELECT == 4 || TASK_SELECT == -1
-    pin(LOW);
-  #endif
+  
+#if TASK_SELECT == 4 || TASK_SELECT == -1
+  pin(LOW);
+#endif
   
   return;
 }
 
 void Schedule(void* data) {
-  #if TASK_SELECT == 5 || TASK_SELECT == -1
-    pin(HIGH);
-  #endif
-    
+#if TASK_SELECT == 5 || TASK_SELECT == -1
+  pin(HIGH);
+#endif
+  
   static unsigned int justinCrazy;
   static char globalCountArray[10];
   
@@ -519,9 +520,9 @@ void Schedule(void* data) {
   
   RIT128x96x4StringDraw(globalCountArray, 50, 75, 15);
   
-  #if TASK_SELECT == 5 || TASK_SELECT == -1
-    pin(LOW);
-  #endif
+#if TASK_SELECT == 5 || TASK_SELECT == -1
+  pin(LOW);
+#endif
   
   return;
 }
