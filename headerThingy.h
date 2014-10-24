@@ -6,6 +6,18 @@
 
 #define PORT_DATA  (GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7)  // full 8 bits of port used
 
+/*
+THOMAS APPLESETH && BRANDON JOHANSON && JUSTIN "JUSTIN" TAFT
+Professor A. Ecker
+EE 472, AUT 2014
+Project 2
+10/23/2014
+
+DESC: A delightful little bit of embedded programming that simulates a train switching yard. 
+
+Random number generator code provided by professor, originally contained in "rand1.c"
+*/
+
 typedef struct {
   void (*justTrainTaskThings)(void*);
   void* trainTaskPtr;
