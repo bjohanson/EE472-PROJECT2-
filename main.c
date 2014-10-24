@@ -1,3 +1,16 @@
+/*
+THOMAS APPLESETH && BRANDON JOHANSON && JUSTIN "JUSTIN" TAFT
+Professor A. Ecker
+EE 472, AUT 2014
+Project 2
+10/23/2014
+
+DESC: A delightful little bit of embedded programming that simulates a train switching yard. 
+
+Random number generator code provided by professor, originally contained in "rand1.c"
+*/
+
+
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -531,7 +544,7 @@ void Delay(int *waffle)
   for(int d = *waffle; d > 0; d--);
   return;
 }
-
+//random number generator code provided by instructor (originally rand1.c)
 int randomInteger(int low, int high)
 {
   double randNum = 0.0;
